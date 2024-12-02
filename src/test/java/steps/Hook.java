@@ -26,7 +26,7 @@ public class Hook extends BaseUtil {
 
         // Configure Firefox options (headless mode can be used as per the environment requirement)
         FirefoxOptions firefoxOptions = new FirefoxOptions();
-        firefoxOptions.addArguments("--headless"); // Optional: Run in headless mode (uncomment if required)
+        
 
         // Initialize FirefoxDriver with options
         base.Driver = new FirefoxDriver(firefoxOptions);
