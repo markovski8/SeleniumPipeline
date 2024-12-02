@@ -1,27 +1,14 @@
 package steps;
 
 import Base.BaseUtil;
-
-
-//import cucumber.api.PickleStepTestStep;
-//import cucumber.api.TestCase;
-//import gherkin.pickles.PickleStep;
-//import io.cucumber.core.api.Scenario;
-
-
 import io.cucumber.java.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.checkerframework.checker.units.qual.C;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.WebDriver;
+import io.cucumber.java.Scenario;
 
-
-/**
- * Created by Karthik on 31/01/2019.
- */
-
-public class Hook extends BaseUtil{
+public class Hook extends BaseUtil {
 
     private BaseUtil base;
 
@@ -31,32 +18,43 @@ public class Hook extends BaseUtil{
 
     @Before
     public void InitializeTest(Scenario scenario) {
+        // Start a new scenario log
         base.scenarioDef = base.features.createNode(scenario.getName());
-        WebDriverManager.chromedriver().setup();
-        ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--headless");
-        base.Driver = new ChromeDriver(chromeOptions);
-    }
 
+        // Set up GeckoDriver using WebDriverManager
+        WebDriverManager.firefoxdriver().setup();
+
+        // Configure Firefox options (headless mode can be used as per the environment requirement)
+        FirefoxOptions firefoxOptions = new FirefoxOptions();
+        firefoxOptions.addArguments("--headless"); // Optional: Run in headless mode (uncomment if required)
+
+        // Initialize FirefoxDriver with options
+        base.Driver = new FirefoxDriver(firefoxOptions);
+    }
 
     @After
     public void TearDownTest(Scenario scenario) {
+        // Take screenshot or perform any custom logging on failure (optional)
         if (scenario.isFailed()) {
-            //Take screenshot logic goes here
-            System.out.println(scenario.getName());
+            System.out.println("Test failed: " + scenario.getName());
+            // Add screenshot capture logic here (if needed)
         }
-        System.out.println("Closing the browser : MOCK");
-        base.Driver.quit();
+
+        // Log and close the browser
+        System.out.println("Closing the browser.");
+        if (base.Driver != null) {
+            base.Driver.quit();
+        }
     }
 
     @BeforeStep
     public void BeforeEveryStep(Scenario scenario) {
-        System.out.println("Before every step " + scenario.getId());
+        System.out.println("Before executing step: " + scenario.getId());
     }
 
     @AfterStep
     public void AfterEveryStep(Scenario scenario) throws NoSuchFieldException, IllegalAccessException {
-        //System.out.println("Before every step " + stepTestStep.getId());
+        // Optional: Add post-step logging if required
+        System.out.println("After executing step: " + scenario.getId());
     }
-
 }
